@@ -1,0 +1,134 @@
+/* Encabezado */
+header {
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del encabezado */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos, alineando el primero a la izquierda y el segundo a la derecha */
+    align-items: center; /* Alinea verticalmente los elementos en el centro */
+    background-color: #c2381e; /* Establece el color de fondo del encabezado a un rojo oscuro */
+    padding: 10px 20px; /* Agrega un espacio interno de 10px arriba y abajo, y 20px a los lados */
+    color: white; /* Establece el color del texto a blanco */
+}
+
+.imagen-izquierda img {
+    max-width: 250px; /* Establece un ancho máximo de 250px para la imagen de la izquierda */
+}
+
+.imagen-derecha img {
+    max-width: 40px; /* Establece un ancho máximo de 40px para la imagen de la derecha */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre la imagen, indicando que es interactiva */
+}
+
+/* Menú de navegación */
+.menu__bar {
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del menú */
+    justify-content: flex-end; /* Alinea los elementos del menú a la derecha */
+    flex-grow: 1; /* Hace que el menú ocupe el espacio disponible en el encabezado */
+}
+
+.menu__bar ul {
+    list-style: none; /* Elimina los puntos de la lista */
+    display: flex; /* Utiliza flexbox para alinear los elementos de la lista en una fila */
+    margin: 0; /* Elimina el margen de la lista */
+    padding: 0; /* Elimina el padding de la lista */
+}
+
+.menu__bar ul li {
+    padding: 5px 15px; /* Agrega un padding de 5px arriba y abajo, y 15px a los lados para los elementos de la lista */
+}
+
+.menu__bar ul li a {
+    color: white; /* Establece el color del texto de los enlaces a blanco */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+    font-weight: bold; /* Establece el peso de la fuente a negrita */
+    font-family: 'arial'; /* Establece la fuente a Arial */
+}
+
+/* Estilos de la barra lateral */
+.sidebar {
+    position: fixed; /* Fija la barra lateral en la pantalla */
+    top: 0; /* Posiciona la barra lateral en la parte superior */
+    right: -250px; /* Oculta inicialmente la barra lateral fuera de la pantalla hacia la derecha */
+    width: 250px; /* Establece un ancho fijo para la barra lateral */
+    height: 100%; /* Establece la altura de la barra lateral al 100% de la ventana */
+    background-color: white; /* Establece el color de fondo de la barra lateral a blanco */
+    color: #c2381e; /* Establece el color del texto a un rojo oscuro */
+    transition: right 0.3s ease-in-out; /* Agrega una transición suave al mostrar/ocultar la barra lateral */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5); /* Agrega una sombra a la izquierda de la barra lateral */
+    z-index: 1000; /* Asegura que la barra lateral esté por encima de otros elementos */
+}
+
+/* Mostrar la barra lateral */
+.sidebar.show {
+    right: 0; /* Cambia el valor de -250px a 0 para mostrar la barra lateral a la derecha */
+}
+
+/* Estilo del botón de cerrar */
+.sidebar .close-btn {
+    display: block; /* Hace que el botón de cerrar ocupe todo el ancho disponible */
+    text-align: right; /* Alinea el texto del botón a la derecha */
+    padding: 10px; /* Agrega un padding de 10px alrededor del botón */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+    color: #c2381e; /* Establece el color del texto del botón a rojo */
+}
+
+.sidebar .close-btn i {
+    font-size: 24px; /* Establece el tamaño de la fuente del icono del botón de cerrar */
+    color: #c2381e; /* Establece el color del icono a rojo */
+}
+
+/* Estilos de la información del administrador */
+.sidebar .admin-info {
+    padding: 20px; /* Agrega un padding de 20px alrededor de la información del administrador */
+    text-align: center; /* Centra el texto dentro de la sección de información del administrador */
+    border-bottom: 1px solid #fa3e05; /* Agrega una línea inferior en rojo para separar visualmente esta sección */
+}
+
+.sidebar .admin-avatar {
+    font-size: 50px; /* Establece el tamaño de la fuente del avatar del administrador */
+    margin-bottom: 10px; /* Agrega un margen inferior de 10px para separar el avatar del texto */
+    color: #c2381e; /* Establece el color del icono del avatar a rojo */
+}
+
+.sidebar .admin-details p {
+    margin: 5px 0; /* Agrega un margen de 5px arriba y abajo para los párrafos de detalles del administrador */
+    font-size: 14px; /* Establece el tamaño de fuente de los párrafos a 14px */
+    color: #c2381e; /* Establece el color del texto a rojo */
+}
+
+.sidebar .admin-details p strong {
+    color: #c2381e; /* Establece el color del texto en negrita a rojo */
+}
+
+/* Estilos de la lista de enlaces */
+.sidebar ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    padding: 0; /* Elimina el padding de la lista */
+}
+
+.sidebar ul li {
+    padding: 15px 15px; /* Agrega un padding de 15px a los lados y arriba y abajo para los elementos de la lista */
+    border-bottom: 1px solid #c2381e; /* Agrega un borde inferior rojo a cada elemento de la lista */
+}
+
+.sidebar ul li a {
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+    color: #c2381e; /* Establece el color del texto de los enlaces a rojo */
+    font-size: 15px; /* Establece el tamaño de fuente de los enlaces a 15px */
+    display: block; /* Hace que el enlace ocupe todo el ancho disponible */
+    transition: background 0.3s; /* Agrega una transición suave al fondo del enlace */
+}
+
+.sidebar ul li a:hover {
+    color: #e91919; /* Cambia el color del texto a un rojo más intenso al pasar el mouse sobre el enlace */
+}
+
+/* Iconos en los enlaces */
+.sidebar ul li a i {
+    margin-right: 5px; /* Agrega un margen a la derecha del icono para separarlo del texto */
+    color: #c2381e; /* Establece el color del icono a rojo */
+}
+
+/* Estilo del botón de abrir menú */
+#toggle-menu {
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el icono del menú */
+    color: #c2381e; /* Establece el color del icono del menú a rojo */
+}

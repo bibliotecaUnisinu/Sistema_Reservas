@@ -1,0 +1,137 @@
+/* Estilos para el contenedor principal */
+.centered-main {
+    display: flex; /* Utiliza flexbox para alinear los elementos */
+    justify-content: center; /* Centra horizontalmente los elementos dentro del contenedor */
+    align-items: center; /* Centra verticalmente los elementos dentro del contenedor */
+    height: 100vh; /* Establece la altura del contenedor al 100% de la altura de la ventana */
+    background-color: #f0f4f8; /* Establece un color de fondo suave */
+}
+
+/* Contenedor del formulario */
+.location-container {
+    background-color: #ffffff; /* Establece el color de fondo a blanco */
+    width: 500px; /* Establece un ancho fijo para el contenedor del formulario */
+    padding: 30px; /* Agrega un espacio interno de 30px alrededor del contenido */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil alrededor del contenedor */
+    border-radius: 10px; /* Redondea las esquinas del contenedor */
+    text-align: center; /* Centra el texto dentro del contenedor */
+}
+
+.location-container img {
+    width: 100px; /* Establece un ancho fijo para las imágenes dentro del contenedor */
+}
+
+.location-container h1 {
+    font-size: 24px; /* Establece el tamaño de fuente del encabezado */
+    font-weight: bold; /* Establece el peso de la fuente a negrita */
+    margin-bottom: 20px; /* Agrega un margen inferior de 20px */
+    color: #333; /* Establece el color del texto a un gris oscuro */
+}
+
+.input-select {
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del selector */
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    font-family: Arial, sans-serif; /* Establece la fuente a Arial */
+    align-items: center; /* Alinea verticalmente los elementos dentro del selector */
+    margin-bottom: 20px; /* Agrega un margen inferior de 20px */
+    border-radius: 12px; /* Redondea las esquinas del selector */
+}
+
+/* Estilo para el selector */
+.input-select select {
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    padding: 14px; /* Agrega un espacio interno de 14px */
+    font-size: 16px; /* Establece el tamaño de fuente */
+    border-radius: 12px; /* Redondea las esquinas del selector */
+    border: 1px solid #000000; /* Establece un borde negro sólido */
+    background-color: #ffffff; /* Establece el color de fondo a blanco */
+    color: #333; /* Establece el color del texto a gris oscuro */
+    appearance: none; /* Elimina el estilo predeterminado del selector */
+    -webkit-appearance: none; /* Elimina el estilo predeterminado en navegadores WebKit */
+    -moz-appearance: none; /* Elimina el estilo predeterminado en navegadores Mozilla */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el selector */
+    outline: none; /* Elimina el contorno predeterminado al enfocar el selector */
+    transition: border-color 0.3s ease; /* Agrega una transición suave al color del borde */
+}
+
+.input-group {
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del grupo de entrada */
+    align-items: center; /* Alinea verticalmente los elementos dentro del grupo */
+    margin-bottom: 20px; /* Agrega un margen inferior de 20px */
+    border: 1px solid #000000; /* Establece un borde negro sólido */
+    border-radius: 12px; /* Redondea las esquinas del grupo de entrada */
+    padding: 10px; /* Agrega un espacio interno de 10px */
+    background-color: #ffffff; /* Establece el color de fondo a blanco */
+}
+
+.input-group input {
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    border: none; /* Elimina el borde del campo de entrada */
+    outline: none; /* Elimina el contorno predeterminado al enfocar el campo de entrada */
+    background-color: transparent; /* Establece el fondo del campo de entrada como transparente */
+    padding: 5px; /* Agrega un espacio interno de 5px */
+    font-size: 16px; /* Establece el tamaño de fuente del campo de entrada */
+}
+
+.input-group input::placeholder {
+    color: #888; /* Establece el color del texto del placeholder a un gris claro */
+}
+
+button {
+    width: 100%; /* Establece el ancho del botón al 100% del contenedor padre */
+    padding: 10px; /* Agrega un espacio interno de 10px */
+    background-color: #f61d1c; /* Establece el color de fondo del botón a rojo */
+    color: white; /* Establece el color del texto del botón a blanco */
+    border: none; /* Elimina el borde del botón */
+    border-radius: 5px; /* Redondea las esquinas del botón */
+    font-size: 18px; /* Establece el tamaño de fuente del botón */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+}
+
+button:hover {
+    background-color: #d90429; /* Cambia el color de fondo del botón a un rojo más oscuro al pasar el mouse */
+}
+
+.location-container a {
+    display: block; /* Hace que el enlace ocupe todo el ancho disponible */
+    margin-top: 15px; /* Agrega un margen superior de 15px */
+    font-size: 16px; /* Establece el tamaño de fuente del enlace */
+    color: #f61d1c; /* Establece el color del texto del enlace a rojo */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    transition: color 0.3s ease; /* Agrega una transición suave al color del enlace */
+}
+
+/* Estilos para el banner de error */
+.error-banner {
+    background-color: #f8d7da; /* Establece el color de fondo del banner de error a un rosa claro */
+    color: #721c24; /* Establece el color del texto del banner de error a un rojo oscuro */
+    border: 1px solid #f5c6cb; /* Establece un borde rosa claro alrededor del banner de error */
+    border-radius: 5px; /* Redondea las esquinas del banner de error */
+    text-align: center; /* Centra el texto dentro del banner de error */
+}
+
+.input-group.invalid input {
+    border: 2px solid red; /* Establece un borde rojo en el campo de entrada si es inválido */
+}
+
+.location-container a:hover {
+    color: #c50d0d; /* Cambia el color del enlace a un rojo más oscuro al pasar el mouse */
+    text-decoration: underline; /* Agrega un subrayado al enlace al pasar el mouse */
+}
+
+/* Estilos para asegurar que el enlace esté bien alineado */
+.location-container a:focus {
+    outline: none; /* Elimina el contorno predeterminado al enfocar el enlace */
+    border-bottom: 1px solid #f61d1c; /* Agrega un borde inferior rojo al enfocar el enlace */
+}
+
+form {
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del formulario */
+    flex-direction: column; /* Establece la dirección de los elementos en el formulario a columna */
+    align-items: center; /* Centra los elementos dentro del formulario */
+}
+
+label {
+    display: none; /* Se ocultan los labels para un diseño más limpio */
+}

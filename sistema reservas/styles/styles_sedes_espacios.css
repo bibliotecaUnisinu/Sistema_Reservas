@@ -1,0 +1,205 @@
+/* Para centrar el título */
+h1 {
+    text-align: center; /* Centra el texto del título */
+    font-size: 24px; /* Establece el tamaño de fuente del título */
+    font-weight: bold; /* Establece el peso de la fuente a negrita */
+    margin-bottom: 20px; /* Agrega un margen inferior de 20px */
+    font-family: 'arial'; /* Establece la fuente a Arial */
+}
+
+/* Contenedor de las sedes */
+.sedes-container {
+    display: grid; /* Utiliza un diseño de cuadrícula */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Crea columnas que se ajustan automáticamente */
+    gap: 20px; /* Espacio entre las tarjetas */
+    padding: 20px; /* Espacio interno del contenedor */
+}
+
+/* Estilo de las tarjetas de las sedes */
+.sede-card {
+    background-color: #fff; /* Establece el color de fondo a blanco */
+    border: 1px solid #ccc; /* Establece un borde gris claro */
+    border-radius: 8px; /* Redondea las esquinas de la tarjeta */
+    padding: 20px; /* Agrega un espacio interno de 20px */
+    text-align: center; /* Centra el texto dentro de la tarjeta */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil */
+    transition: transform 0.2s; /* Agrega una transición suave al transformar la tarjeta */
+    overflow: hidden; /* Previene el desbordamiento del contenido */
+    white-space: nowrap; /* Mantiene el texto en una sola línea */
+    text-overflow: ellipsis; /* Agrega puntos suspensivos para el texto que se desborda */
+}
+
+/* Asegura que el texto del título de la tarjeta se ajuste y se mantenga dentro de la tarjeta */
+.sede-card h2 {
+    font-size: 20px; /* Establece el tamaño de fuente del título */
+    font-weight: bold; /* Establece el peso de la fuente a negrita */
+    overflow: hidden; /* Previene el desbordamiento del texto */
+    white-space: nowrap; /* Mantiene el texto en una sola línea */
+    text-overflow: ellipsis; /* Agrega puntos suspensivos para el texto que se desborda */
+    margin: 0; /* Elimina el margen del título */
+}
+
+/* Ajusta el texto del párrafo para prevenir el desbordamiento */
+.sede-card p.estado {
+    font-size: 16px; /* Establece el tamaño de fuente del párrafo */
+    overflow: hidden; /* Previene el desbordamiento del texto */
+    white-space: nowrap; /* Mantiene el texto en una sola línea */
+    text-overflow: ellipsis; /* Agrega puntos suspensivos para el texto que se desborda */
+    margin: 5px 0 0; /* Agrega un margen superior de 5px */
+}
+
+/* Estilo de la clase para ocultar elementos */
+.oculta {
+    display: none; /* Oculta el elemento */
+}
+
+/* Botón para crear sede, movido al final del contenedor */
+.boton-crear-sede {
+    display: flex; /* Utiliza flexbox para alinear el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+    background-color: #fff; /* Establece el color de fondo a blanco */
+    border: 1px solid #ccc; /* Establece un borde gris claro */
+    border-radius: 8px; /* Redondea las esquinas del botón */
+    padding: 20px; /* Agrega un espacio interno de 20px */
+    text-align: center; /* Centra el texto dentro del botón */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil */
+    transition: transform 0.2s; /* Agrega una transición suave al transformar el botón */
+}
+
+.icono-mas {
+    font-size: 40px; /* Ajusta el tamaño del ícono */
+    color: #000; /* Establece el color del ícono a negro */
+}
+
+/* Modal que muestra la información del modal */
+/* Estilo del modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Posición fija para que el modal se mantenga en la pantalla */
+    z-index: 1000; /* Asegura que el modal esté por encima de otros elementos */
+    left: 0; /* Posiciona el modal a la izquierda */
+    top: 0; /* Posiciona el modal en la parte superior */
+    width: 100%; /* Ancho completo de la ventana */
+    height: 100%; /* Alto completo de la ventana */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+}
+
+/* Contenido del modal */
+.modal-content {
+    background-color: #fefefe; /* Establece el color de fondo del contenido del modal a blanco */
+    margin: 10% auto; /* Centra el contenido en la pantalla con un margen superior del 10% */
+    padding: 40px; /* Agrega un espacio interno de 40px */
+    border-radius: 8px; /* Redondea las esquinas del contenido del modal */
+    width: 80%; /* Ancho del modal */
+    max-width: 400px; /* Ancho máximo del modal */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra al contenido del modal */
+    position: relative; /* Para posicionar elementos dentro del modal */
+    text-align: left; /* Alinea el texto a la izquierda */
+    font-family: Arial, sans-serif; /* Establece la fuente a Arial */
+}
+
+/* Estilo del botón de cierre */
+.close {
+    position: absolute; /* Posiciona el botón de cierre de forma absoluta dentro del modal */
+    top: 10px; /* Posiciona el botón 10px desde la parte superior */
+    right: 15px; /* Posiciona el botón 15px desde la derecha */
+    font-size: 24px; /* Establece el tamaño de la fuente del botón de cierre */
+    color: #333; /* Establece el color del texto del botón de cierre */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+    font-weight: bold; /* Establece el peso de la fuente a negrita */
+}
+
+.close:hover {
+    color: #c00; /* Cambia el color a rojo al pasar el mouse sobre el botón de cierre */
+}
+
+/* Estilo del título del modal */
+.modal-content h2 {
+    font-size: 22px; /* Establece el tamaño de fuente del título del modal */
+    font-weight: bold; /* Establece el peso de la fuente a negrita */
+    margin-bottom: 15px; /* Agrega un margen inferior de 15px */
+    color: #333; /* Establece el color del texto a gris oscuro */
+    text-align: center; /* Centra el texto del título */
+}
+
+/* Subrayado en los textos como en la segunda imagen */
+.modal-content p span {
+    border-bottom: 2px solid #000; /* Agrega un subrayado negro al texto dentro del span */
+}
+
+.modal-content input[type="text"] {
+    width: 100%; /* Establece el ancho del campo de entrada al 100% del contenedor */
+    padding: 1px 5px; /* Agrega un espacio interno de 1px arriba y abajo, y 5px a los lados */
+    margin-bottom: 20px; /* Agrega un margen inferior de 20px */
+    border: none; /* Elimina el borde del campo de entrada */
+    border-bottom: 2px solid #000; /* Agrega un borde inferior negro */
+    font-size: 16px; /* Establece el tamaño de fuente del campo de entrada */
+    color: #333; /* Establece el color del texto a gris oscuro */
+    outline: none; /* Elimina el contorno predeterminado al enfocar el campo de entrada */
+}
+
+.modal-content input[type="text"]:focus {
+    border-bottom: 2px solid #333; /* Cambia el color del borde inferior a gris oscuro al enfocar el campo de entrada */
+}
+
+/* Estilo del botón de editar */
+.modal-content button {
+    display: block; /* Hace que el botón ocupe todo el ancho disponible */
+    width: 100%; /* Establece el ancho del botón al 100% del contenedor */
+    margin-top: 20px; /* Agrega un margen superior de 20px */
+    padding: 10px 20px; /* Agrega un espacio interno de 10px arriba y abajo, y 20px a los lados */
+    background-color: #e61414; /* Establece el color de fondo del botón a rojo */
+    color: white; /* Establece el color del texto del botón a blanco */
+    border: none; /* Elimina el borde del botón */
+    border-radius: 4px; /* Redondea las esquinas del botón */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+    font-size: 16px; /* Establece el tamaño de fuente del botón */
+    transition: background-color 0.3s ease; /* Agrega una transición suave al color de fondo del botón */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+.modal-content button:hover {
+    background-color: #963131; /* Cambia el color de fondo a un rojo más oscuro al pasar el mouse sobre el botón */
+}
+
+/* Estilo para el grupo de formularios */
+.form-group {   
+    text-align: right; /* Alinea el texto a la derecha dentro del grupo de formularios */
+}
+
+/* Estilos para el contenedor de la entrada y sufijo */
+.input-container {
+    position: relative; /* Permite posicionar elementos dentro del contenedor */
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del contenedor */
+    align-items: center; /* Alinea verticalmente los elementos dentro del contenedor */
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    border-bottom: 2px solid #000; /* Agrega un borde inferior negro */
+}
+
+/* Estilo para el campo de entrada de capacidad */
+#edit-capacity {
+    width: 50%; /* Establece el ancho del campo de entrada al 50% del contenedor */
+    padding: 10px 40px 10px 10px; /* Agrega un espacio interno de 10px arriba y abajo, y 40px a la derecha y 10px a la izquierda */
+    border: none; /* Elimina el borde del campo de entrada */
+    outline: none; /* Elimina el contorno predeterminado al enfocar el campo de entrada */
+    font-size: 16px; /* Establece el tamaño de fuente del campo de entrada */
+    color: #333; /* Establece el color del texto a gris oscuro */
+    transition: border-color 0.3s ease; /* Agrega una transición suave al color del borde */
+}
+
+/* Sufijo de entrada */
+.input-suffix {
+    font-size: 14px; /* Establece el tamaño de fuente del sufijo a 14px */
+    color: #777; /* Establece el color del sufijo a gris claro */
+    pointer-events: none; /* Evita que el sufijo interfiera con la interacción del usuario */
+}
+
+/* Placeholder para guiar al usuario */
+#edit-capacity::placeholder {
+    color: #aaa; /* Establece el color del placeholder a gris claro */
+    opacity: 1; /* Asegura que el placeholder sea completamente opaco */
+}

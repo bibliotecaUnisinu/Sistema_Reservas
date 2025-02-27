@@ -1,0 +1,162 @@
+
+.container {
+    max-width: 800px; /* Establece un ancho máximo de 800px para el contenedor */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding: 20px; /* Agrega un espacio interno de 20px alrededor del contenido */
+    background-color: #ffffff; /* Establece el color de fondo a blanco */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil alrededor del contenedor */
+    border-radius: 10px; /* Redondea las esquinas del contenedor */
+}
+
+#calendar {
+    margin-top: 20px; /* Agrega un margen superior de 20px al calendario */
+    border: 1px solid #000000; /* Establece un borde negro sólido alrededor del calendario */
+    border-radius: 4px; /* Redondea las esquinas del calendario */
+}
+
+/* Ajuste del título del mes */
+.fc-toolbar-title {
+    font-family: 'arial'; /* Establece la fuente a Arial para el título del mes */
+    padding: 4px; /* Agrega un espacio interno de 4px alrededor del texto */
+    border-radius: 6px; /* Redondea las esquinas del título */
+    color: #000000; /* Establece el color del texto a negro */
+}
+
+/* Ajuste de los días de la semana */
+.fc-col-header-cell-cushion {
+    color: #c2381e !important; /* Cambia el color del texto de los días de la semana a un rojo oscuro */
+}
+
+/* Ajuste de los números del mes */
+.fc-daygrid-day-number {
+    color: #000000 !important; /* Establece el color de los números de los días a negro */
+}
+
+/* Estilo para el botón de anterior */
+.fc-prev-button {
+    background-color: #c2381e !important; /* Establece el color de fondo del botón de anterior a rojo oscuro */
+    border-color: #c2381e !important; /* Establece el color del borde del botón de anterior */
+    color: white !important; /* Establece el color del texto del botón de anterior a blanco */
+    top: 10px; /* Posiciona el botón 10px desde la parte superior */
+    left: 10px; /* Posiciona el botón 10px desde la izquierda */
+    position: relative; /* Establece la posición relativa para el botón */
+}
+
+/* Estilo para el botón de siguiente */
+.fc-next-button {
+    background-color: #c2381e !important; /* Establece el color de fondo del botón de siguiente a rojo oscuro */
+    border-color: #c2381e !important; /* Establece el color del borde del botón de siguiente */
+    color: white !important; /* Establece el color del texto del botón de siguiente a blanco */
+    top: 10px; /* Posiciona el botón 10px desde la parte superior */
+    left: -10px; /* Posiciona el botón 10px desde la izquierda (hacia la izquierda) */
+    position: relative; /* Establece la posición relativa para el botón */
+}
+
+/* Efecto hover para los botones de anterior y siguiente */
+.fc-prev-button:hover,
+.fc-next-button:hover {
+    background-color: rgb(161, 0, 0) !important; /* Cambia el color de fondo al rojo más oscuro al pasar el mouse */
+    border-color: rgba(161, 0, 0) !important; /* Cambia el color del borde al rojo más oscuro al pasar el mouse */
+}
+
+/* Estilo para el botón de clase .btn-outline-primary */
+.btn-outline-primary {
+    font-family: 'arial' !important; /* Establece la fuente a Arial para el botón */
+    background-color: #c2381e !important; /* Establece el color de fondo a rojo oscuro */
+    border-color: #c2381e !important; /* Establece el color del borde a rojo oscuro */
+    color: white !important; /* Establece el color del texto a blanco */
+}
+
+/* Efecto hover para el botón de clase .btn-outline-primary */
+.btn-outline-primary:hover {
+    background-color: rgb(161, 0, 0) !important; /* Cambia el color de fondo al rojo más oscuro al pasar el mouse */
+}
+
+/* Estilo para el día actual en el calendario */
+.fc.fc .fc-daygrid-day.fc-day-today {
+    background-color: #fd000013; /* Establece un fondo semitransparente para el día actual */
+}
+
+select {
+    border-color: #000000 !important; /* Establece el color del borde del elemento select a negro */
+    background-color: #ffffff !important; /* Establece el color de fondo del elemento select a blanco */
+    font-family: 'arial' !important; /* Establece la fuente a Arial para el elemento select */
+}
+
+/* Efecto hover para el elemento con id 'sedes' */
+#sedes:hover {
+    background-color: #ff0f0f; /* Cambia el color de fondo a rojo brillante al pasar el mouse */
+    color: #ff1b1b; /* Cambia el color del texto a un rojo más intenso al pasar el mouse */
+}
+
+/* Estilo para las opciones dentro del select con id 'sedes' */
+#sedes option {
+    background-color: rgb(255, 255, 255); /* Establece el color de fondo de las opciones a blanco */
+    color: rgb(0, 0, 0); /* Establece el color del texto de las opciones a negro */
+}
+
+/* Efecto hover para las opciones dentro del select con id 'sedes' */
+#sedes option:hover {
+    background-color: #e4e3e3; /* Cambia el color de fondo a gris claro al pasar el mouse sobre la opción */
+    color: rgb(248, 0, 0); /* Cambia el color del texto a rojo intenso al pasar el mouse sobre la opción */
+}
+.evento {
+    width: 100px; /* Ajusta el tamaño según sea necesario */
+    height: 50px; /* Ajusta el tamaño según sea necesario */
+    margin: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.disponible {
+    background-color: #00ff00; /* Verde para horarios libres */
+    border: none; /* Sin borde */
+}
+
+.reservado {
+    background-color: #ff0000; /* Rojo para reservas ocupadas */
+    position: relative;
+}
+
+.reservado::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 255, 255, 0.5) 10px,
+        rgba(255, 255, 255, 0.5) 20px
+    );
+}
+/* Estilos para los bloques de tiempo */
+.fc-event {
+    border-radius: 4px;
+    border: none;
+    margin: 2px;
+}
+
+.disponible-badge {
+    background: #4CAF50;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.reservado-badge {
+    background: #F44336;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* Ajustar altura de celdas */
+.fc-timegrid-slot {
+    height: 40px;
+}

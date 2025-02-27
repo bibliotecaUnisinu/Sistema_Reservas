@@ -1,0 +1,124 @@
+/* Estilos globales */
+* {
+    margin: 0; /* Elimina el margen por defecto de todos los elementos */
+    padding: 0; /* Elimina el padding por defecto de todos los elementos */
+    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho y alto de los elementos */
+    font-family: 'Arial', sans-serif; /* Establece la fuente a Arial para todos los elementos */
+}
+
+/* Estilos del cuerpo */
+body {
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del cuerpo */
+    justify-content: center; /* Centra horizontalmente los elementos dentro del cuerpo */
+    align-items: center; /* Centra verticalmente los elementos dentro del cuerpo */
+    height: 100vh; /* Establece la altura del cuerpo al 100% de la altura de la ventana */
+    background-color: #f0f4f8; /* Establece un fondo claro */
+}
+
+/* Contenedor de inicio de sesión */
+.login-container {
+    background-color: #ffffff; /* Establece el color de fondo a blanco */
+    width: 500px; /* Establece un ancho fijo para el contenedor de inicio de sesión */
+    padding: 50px; /* Agrega un espacio interno de 50px alrededor del contenido */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil alrededor del contenedor */
+    border-radius: 10px; /* Redondea las esquinas del contenedor */
+    text-align: center; /* Centra el texto dentro del contenedor */
+}
+
+.login-container img {
+    width: 150px; /* Establece un ancho fijo para la imagen dentro del contenedor */
+    margin-bottom: 30px; /* Agrega un margen inferior de 30px para separar la imagen del contenido */
+}
+
+/* Grupo de entrada */
+.input-group {
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del grupo de entrada */
+    align-items: center; /* Alinea verticalmente los elementos dentro del grupo */
+    margin-bottom: 20px; /* Agrega un margen inferior de 20px */
+    border: 1px solid #000000; /* Establece un borde negro sólido alrededor del grupo de entrada */
+    border-radius: 12px; /* Redondea las esquinas del grupo de entrada */
+    padding: 10px; /* Agrega un espacio interno de 10px */
+    background-color: #ffffff; /* Establece el color de fondo a blanco */
+}
+
+.input-group i {
+    font-size: 20px; /* Establece el tamaño de la fuente del icono dentro del grupo de entrada */
+    color: #000000; /* Establece el color del icono a negro */
+}
+
+.input-group input {
+    width: 100%; /* Establece el ancho al 100% del contenedor padre */
+    border: none; /* Elimina el borde del campo de entrada */
+    outline: none; /* Elimina el contorno predeterminado al enfocar el campo de entrada */
+    background-color: transparent; /* Establece el fondo del campo de entrada como transparente */
+    padding: 5px; /* Agrega un espacio interno de 5px */
+    font-size: 16px; /* Establece el tamaño de fuente del campo de entrada */
+}
+
+.input-group input::placeholder {
+    color: #888; /* Establece el color del texto del placeholder a un gris claro */
+}
+
+/* Estilo del botón */
+button {
+    width: 100%; /* Establece el ancho del botón al 100% del contenedor padre */
+    padding: 10px; /* Agrega un espacio interno de 10px */
+    background-color: #f61d1c; /* Establece el color de fondo del botón a rojo */
+    color: white; /* Establece el color del texto del botón a blanco */
+    border: none; /* Elimina el borde del botón */
+    border-radius: 5px; /* Redondea las esquinas del botón */
+    font-size: 18px; /* Establece el tamaño de fuente del botón */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+}
+
+button:hover {
+    background-color: #d90429; /* Cambia el color de fondo del botón a un rojo más oscuro al pasar el mouse */
+}
+
+/* Estilo del enlace */
+.login-container a {
+    display: block; /* Hace que el enlace ocupe todo el ancho disponible */
+    margin-top: 15px; /* Agrega un margen superior de 15px para separar el enlace del contenido anterior */
+    font-size: 16px; /* Establece el tamaño de fuente del enlace */
+    color: #f61d1c; /* Establece el color del texto del enlace a rojo */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    transition: color 0.3s ease; /* Agrega una transición suave al color del enlace */
+}
+
+/* Estilos para el banner de error */
+.error-banner {
+    background-color: #f8d7da; /* Establece el color de fondo del banner de error a un rosa claro */
+    color: #721c24; /* Establece el color del texto del banner de error a un rojo oscuro */
+    border: 1px solid #f5c6cb; /* Establece un borde rosa claro alrededor del banner de error */
+    padding: 10px; /* Agrega un padding de 10px alrededor del contenido del banner */
+    margin-bottom: 15px; /* Agrega un margen inferior de 15px para separar el banner de otros elementos */
+    border-radius: 5px; /* Redondea las esquinas del banner de error */
+    text-align: center; /* Centra el texto dentro del banner de error */
+}
+
+.input-group.invalid input {
+    border: 2px solid red; /* Establece un borde rojo en el campo de entrada si es inválido */
+}
+
+.login-container a:hover {
+    color: #c50d0d; /* Cambia el color del enlace a un rojo más oscuro al pasar el mouse */
+    text-decoration: underline; /* Agrega un subrayado al enlace al pasar el mouse */
+}
+
+/* Estilos para asegurar que el enlace esté bien alineado */
+.login-container a:focus {
+    outline: none; /* Elimina el contorno predeterminado al enfocar el enlace */
+    border-bottom: 1px solid #f61d1c; /* Agrega un borde inferior rojo al enfocar el enlace */
+}
+
+/* Estilos del formulario */
+form {
+    display: flex; /* Utiliza flexbox para alinear los elementos dentro del formulario */
+    flex-direction: column; /* Establece la dirección de los elementos en el formulario a columna */
+    align-items: center; /* Centra los elementos dentro del formulario */
+}
+
+label {
+    display: none; /* Se ocultan los labels para un diseño más limpio */
+}
