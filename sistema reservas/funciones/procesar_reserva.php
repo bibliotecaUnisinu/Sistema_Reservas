@@ -25,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sede_seleccionada = $_POST['sede_seleccionada'];
     $espacio_seleccionado = $_POST['espacio_seleccionada'];
     $hora_inicio = $_POST['horaInicio']; 
-    $Horas_reservas = $_POST['Horas_reservas'];
-    $minutos_reservas = $_POST['minutos_reservas'];
+    $Horas_reservas = $_POST['Horas_reservas'] ?? 0;
+    $minutos_reservas = $_POST['minutos_reservas'] ?? 0;
     $semestre = $_POST['semestre'];
     $programa = $_POST['programa'];
     $num_asistentes = $_POST['num_asistentes'];
@@ -148,7 +148,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     'number_attendees' => $num_asistentes,
                                     'state_reservation' => 1,
                                     'id_location' => $id_location,
-                                    'id_space' => $id_space
+                                    'id_space' => $id_space,
+                                    'cancel_reserv' => 0
                                 ];
 
                                 // Insertar en la tabla 'reservations'
