@@ -30,6 +30,12 @@
         right: 'next'
     },
     events: [],
+    dayMaxEvents: 4,
+    editable: false,
+    eventStartEditable: false,
+    eventAllow: function (dropLocation, draggedEvent) {
+        return false;
+    },
     
     dayMaxEvents: 4, // Limitar a 4 eventos por día en la vista de mes
 
@@ -81,60 +87,82 @@
         endTime: '21:00:00'
     },
 
+   
     dateClick: function(info) {
-        var fechaSeleccionada = new Date(info.dateStr);
-        var hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
+    manejarClickEnFecha(info.dateStr);
+},
 
-        if (!sedeSeleccionada || !espacioSeleccionado) {
-            alert("Por favor selecciona una sede y un espacio antes de continuar.");
-        } else if (fechaSeleccionada < hoy) {
-            alert("No se pueden hacer reservas para fechas anteriores.");
-        } else {
-            var numeroDia = info.date.getDay();
-            if (numeroDia === 0) {
-                alert("No hay reservas los domingos");
-            } else {
-                // Verificar que la hora seleccionada está dentro de los intervalos permitidos
-                const hora = info.date.getHours() + ':' + info.date.getMinutes().toString().padStart(2, '0');
-                const horaValida = intervalos.some(intervalo => {
-                    return hora >= intervalo[0].slice(0, -3) && hora < intervalo[1].slice(0, -3);
-                });
+eventClick: function(info) {
+    info.jsEvent.preventDefault();
+    const evento = info.event;
 
-                if (horaValida) {
-                    document.getElementById('fecha_reserva').value = info.dateStr;
-                    $('#modal_formulario').modal("show");
-                } else {
-                    alert("Por favor selecciona un horario dentro de los intervalos permitidos:\n" +
-                          "06:30 - 10:00\n10:00 - 13:30\n13:30 - 17:00\n17:00 - 21:00");
-                }
+    const sedeSeleccionada = document.getElementById('sedeSelect').value;
+    const espacioSeleccionado = document.getElementById('espacioSelect').value;
+
+    if (!sedeSeleccionada || !espacioSeleccionado) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sede y Espacio Requeridos',
+            text: 'Por favor selecciona una sede y un espacio antes de continuar.'
+        });
+        return;
+    }
+
+    if (evento.extendedProps.tipo === 'disponibilidad') {
+        const fechaStr = evento.startStr.split('T')[0];
+
+        document.getElementById('fecha_reserva').value = fechaStr;
+        document.getElementById('espacio_seleccionada').value = evento.title.replace("Disponible: ", "");
+
+        // Mostrar horarios disponibles de ese día
+        const disponibles = calendar.getEvents().filter(ev =>
+            ev.extendedProps.tipo === 'disponibilidad' &&
+            ev.startStr.startsWith(fechaStr)
+        );
+
+        let htmlHorarios = disponibles.map(ev => {
+            const inicio = ev.startStr.split('T')[1].slice(0, 5);
+            const fin = ev.endStr.split('T')[1].slice(0, 5);
+            return `<b>${inicio} - ${fin}</b>`;
+        }).join('<br>');
+
+        Swal.fire({
+            icon: 'info',
+            title: `Horarios disponibles para el ${fechaStr}`,
+            html: htmlHorarios,
+            confirmButtonText: 'Reservar este día',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#modal_formulario').modal("show");
             }
-        }
-    },
+        });
 
-    eventClick: function(info) {
-        info.jsEvent.preventDefault();
-        var evento = info.event;
+    } else if (evento.extendedProps.tipo === 'reserva') {
+        const startTime = evento.start ? formatTime(evento.start) : '';
+        const endTime = evento.end ? formatTime(evento.end) : '';
+        const idReserva = evento.extendedProps.id_reservation;
+        const descripcion = evento.extendedProps.observation;
 
-        if (evento.extendedProps.tipo === 'disponibilidad') {
-            document.getElementById('espacio_seleccionada').value = evento.title.replace("Disponible: ", "");
-            document.getElementById('fecha_reserva').value = info.event.start.toISOString().split('T')[0];
-            $('#modal_formulario').modal("show");
-        } else {
-            const startTime = evento.start ? formatTime(evento.start) : '';
-            const endTime = evento.end ? formatTime(evento.end) : '';
-            
-            document.getElementById('reservaTitulo').innerText = evento.title;
-            document.getElementById('reservaFechaInicio').innerText = `${evento.start.toLocaleDateString()} ${startTime}`;
-            document.getElementById('reservaFechaFin').innerText = evento.end ? 
-                `${evento.end.toLocaleDateString()} ${endTime}` : 
-                'No especificado';
-            document.getElementById('reservaDescripcion').innerText = evento.extendedProps.description || 'No hay descripción disponible';
+        // Mostrar modal de detalles de la reserva
+        document.getElementById('reservaId').value = idReserva;
+        document.getElementById('reservaIdMostrar').innerText = idReserva;
 
-            $('#modalDetallesEvento').modal("show");
-        }
-    },
+        document.getElementById('reservaTitulo').innerText = evento.title;
+        document.getElementById('reservaFechaInicio').innerText =
+            `${evento.start.toLocaleDateString()} ${startTime}`;
+        document.getElementById('reservaFechaFin').innerText =
+            evento.end ? `${evento.end.toLocaleDateString()} ${endTime}` : 'No especificado';
+        document.getElementById('reservaDescripcion').innerText = descripcion || 'Sin descripción';
 
+        document.getElementById('sede_seleccionada_modal').value = sedeSeleccionada;
+        document.getElementById('espacio_seleccionada_modal').value = espacioSeleccionado;
+
+        $('#modalDetallesEvento').modal("show");
+    }
+}
+
+,
     selectable: true,
     editable: true,
     titleFormat: function(info) {
@@ -228,6 +256,127 @@
                 });
             }
         }
+
+        function manejarClickEnFecha(fechaStr) {
+    const fechaSeleccionada = new Date(fechaStr);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (!sedeSeleccionada || !espacioSeleccionado) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sede y Espacio Requeridos',
+            text: 'Por favor selecciona una sede y un espacio antes de continuar.'
+        });
+        return;
+    }
+
+    if (fechaSeleccionada < hoy) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Fecha Inválida',
+            text: 'No se pueden hacer reservas para fechas anteriores.'
+        });
+        return;
+    }
+
+    if (fechaSeleccionada.getDay() === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Domingo No Disponible',
+            text: 'No hay reservas disponibles los domingos.'
+        });
+        return;
+    }
+
+    const todosEventos = calendar.getEvents();
+
+    const bloquesDisponibles = calendar.getEvents().filter(evento =>
+        evento.extendedProps.tipo === 'disponibilidad' &&
+        evento.startStr.startsWith(fechaStr)
+    );
+
+    const reservas = todosEventos.filter(evento =>
+        evento.extendedProps.tipo === 'reserva' &&
+        evento.startStr.startsWith(fechaStr)
+    );
+
+    if (bloquesDisponibles.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: `Sin disponibilidad el ${fechaStr}`,
+            text: 'No hay horarios disponibles para reservar en este día.'
+        });
+        return;
+    }
+
+    // Crear un arreglo con todos los bloques horarios disponibles sin superposición de reservas
+    const bloquesFinales = [];
+
+    bloquesDisponibles.forEach(bloque => {
+        let inicio = new Date(bloque.start);
+        let fin = new Date(bloque.end);
+
+        let segmentos = [{ inicio, fin }];
+
+        reservas.forEach(res => {
+            const resInicio = new Date(res.start);
+            const resFin = new Date(res.end);
+
+            // Procesar cada segmento y dividir si hay intersección
+            segmentos = segmentos.flatMap(seg => {
+                if (resInicio >= seg.fin || resFin <= seg.inicio) {
+                    return [seg]; // no hay superposición
+                }
+
+                const nuevos = [];
+
+                if (resInicio > seg.inicio) {
+                    nuevos.push({ inicio: seg.inicio, fin: resInicio });
+                }
+
+                if (resFin < seg.fin) {
+                    nuevos.push({ inicio: resFin, fin: seg.fin });
+                }
+
+                return nuevos;
+            });
+        });
+
+        bloquesFinales.push(...segmentos);
+    });
+
+    if (bloquesFinales.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: `Día Ocupado`,
+            text: 'Todos los bloques están ocupados para este día.'
+        });
+        return;
+    }
+
+    // Mostrar los bloques disponibles reales
+    let htmlHorarios = bloquesFinales.map(seg => {
+        const inicio = seg.inicio.toTimeString().slice(0, 5);
+        const fin = seg.fin.toTimeString().slice(0, 5);
+        return `<b>${inicio} - ${fin}</b>`;
+    }).join('<br>');
+
+    Swal.fire({
+        icon: 'info',
+        title: `Bloques disponibles el ${fechaStr}`,
+        html: htmlHorarios,
+        confirmButtonText: 'Reservar',
+        showCancelButton: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('fecha_reserva').value = fechaStr;
+            $('#modal_formulario').modal("show");
+        }
+    });
+}
+
+
 
         // Configurar la fecha actual en el modal
         var fechaActual = document.getElementById('fecha_actual');

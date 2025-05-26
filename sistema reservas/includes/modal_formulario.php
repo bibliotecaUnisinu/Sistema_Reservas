@@ -1,6 +1,8 @@
 <!-- Modal Principal para Crear Reserva -->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <div class="modal fade" id="modal_formulario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -13,16 +15,17 @@
             <div class="modal-body">
                 <form id="formulario" action="../funciones/procesar_reserva.php" method="POST" autocomplete="off" onsubmit="return validarFormulario()">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div id="error-message" class="error-message text-danger" style="display: none;"></div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                        <input type="text" id="identificacion" name="id" class="form-control" placeholder="Identificación" required pattern="\d{5,10}" minlength="5" maxlength="10" title="Debe tener entre 5 y 10 números" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <label for="id">Identificacion</label>
+                        <div class="invalid-feedback">El campo debe contener entre 5 y 11 números.</div>
+                        <div id="mensajeTipoUsuarioAntes" class="text-danger" style="display: none;">Por favor selecciona un tipo de usuario antes de ingresar la identificación.</div>
+                        </div>
+
                             <div class="form-floating mb-3">
-                                <input type="text" id="identificacion" name="id" class="form-control" placeholder="Identificación" required pattern="\d{8,11}" minlength="8" maxlength="11" title="Debe tener entre 8 y 11 números" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                                <label for="id">Identificacion</label>
-                                <div class="invalid-feedback">El campo debe contener entre 8 y 11 números.</div>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" required maxlength="10" pattern="\d{10}" title="Debe tener 10 números" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                                <label for="telefono">Teléfono</label>
+                            <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" required pattern="3\d{9}" maxlength="10" title="El teléfono debe comenzar con 3 y tener 10 dígitos" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <label for="telefono">Teléfono</label>
                                 <div class="invalid-feedback">El campo debe contener 10 números.</div>
                             </div>
                             <div class="form-floating mb-3">
@@ -36,16 +39,19 @@
                                 <div class="invalid-feedback">El campo debe contener solo letras.</div>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
-                                <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
+                            <label for="email">Email</label>
+                            <div id="mensajeCorreo" class="text-danger" style="display: none;">El correo debe ser válido y tener el dominio @gmail.com.</div>
+                            <span id="mensajeEmail" style="display:none;color:red;"></span>
                             </div>
+                            
                             <div class="mb-3">
                                 <select id="tipo_usuario" name="tipo_usuario" class="form-select" required onchange="ocultarMensaje('mensajeTipoUsuario')">
                                     <option disabled selected>Tipo de usuario</option>
                                     <option value="Docente">Docente</option>
                                     <option value="Estudiante">Estudiante</option>
-                                    <option value="Administrador">Administrador</option>
                                 </select>
+
                                 <div id="mensajeTipoUsuario" class="text-danger" style="display: none;">Por favor, selecciona un tipo de usuario.</div>
                             </div>
                             <div class="form-floating mb-3">
@@ -99,33 +105,22 @@
                                 </select>
                                 <div id="mensajeMinutos" class="text-danger" style="display: none;">El tiempo no puede ser menor a 15 minutos.</div>
                             </div>
+                            
                             <div class="mb-3">
                                 <label for="programa">Programa:</label>
                                 <select id="programa" name="programa" class="form-select" required>
-                                    <option disabled selected>Programa</option>
-                                    <option value="Medicina">Medicina</option>
-                                    <option value="Sistemas">Sistemas</option>
-                                    <option value="Contaduría">Contaduría</option>
-                                    <option value="Industrial">Industrial</option>
-                                    <option value="Odontología">Odontología</option>
-                                    <option value="Enfermería">Enfermería</option>
+                                    <option disabled selected>Seleccione un programa</option>
+                                    <?php while($programa = $programas->fetch_assoc()): ?>
+                                        <option value="<?= $programa['id_programa'] ?>"><?= htmlspecialchars($programa['nombre_programa']) ?></option>
+                                    <?php endwhile; ?>
                                 </select>
                                 <div id="mensajePrograma" class="text-danger" style="display: none;">Por favor, selecciona un programa.</div>
                             </div>
-                            <div class="mb-3">
+
+                             <div class="mb-3">
                                 <label for="semestre">Semestre:</label>
                                 <select id="semestre" name="semestre" class="form-select" required>
-                                    <option disabled selected>Semestre</option>
-                                    <option value="otro">Otro</option>
-                                    <option value="1">1 Semestre</option>
-                                    <option value="2">2 Semestre</option>
-                                    <option value="3">3 Semestre</option>
-                                    <option value="4">4 Semestre</option>
-                                    <option value="5">5 Semestre</option>
-                                    <option value="6">6 Semestre</option>
-                                    <option value="7">7 Semestre</option>
-                                    <option value="8">8 Semestre</option>
-                                    <option value="9">9 Semestre</option>
+                                <option disabled selected>Semestre</option>
                                 </select>
                                 <div id="mensajeSemestre" class="text-danger" style="display: none;">Por favor, selecciona un semestre.</div>
                             </div>
@@ -137,7 +132,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="btnCrearReserva" disabled>Crear Reserva</button>
+                        <button type="submit" class="btn btn-primary" id="btnCrearReserva" >Crear Reserva</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
@@ -145,113 +140,6 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const fechaReserva = flatpickr("#fecha_reserva", {
-        enableTime: false,
-        dateFormat: "Y-m-d",
-        minDate: "today"
-    });
-
-    document.getElementById('iconoCalendario').addEventListener('click', function() {
-        fechaReserva.open();
-    });
-
-    function ocultarMensaje(mensajeId) {
-        document.getElementById(mensajeId).style.display = 'none';
-    }
-
-    function validarFormulario() {
-        let isValid = true;
-
-        // Definir los campos a validar y sus mensajes de error
-        const camposValidar = [
-            { id: "Horas_reservas", mensaje: "mensajeDuracion" },
-            { id: "minutos_reservas", mensaje: "mensajeMinutos" },
-            { id: "programa", mensaje: "mensajePrograma" },
-            { id: "semestre", mensaje: "mensajeSemestre" },
-            { id: "num_asistentes", mensaje: "mensajeAsistentes" }
-        ];
-
-        // Ocultar mensajes previos
-        camposValidar.forEach(({ mensaje }) => {
-            document.getElementById(mensaje).style.display = 'none';
-        });
-
-        // Validar duración o minutos (uno debe ser mayor a 0)
-        const horas = document.getElementById("Horas_reservas").value;
-        const minutos = document.getElementById("minutos_reservas").value;
-
-        if (horas == "0" && minutos == "0") {
-            document.getElementById("mensajeDuracion").style.display = 'block';
-            document.getElementById("mensajeMinutos").style.display = 'block';
-            isValid = false;
-        }
-
-        // Validar los demás campos
-        camposValidar.forEach(({ id, mensaje }) => {
-            const campo = document.getElementById(id);
-            if (!campo.value || campo.value === "0" || campo.value === "Programa" || campo.value === "Semestre") {
-                document.getElementById(mensaje).style.display = 'block';
-                isValid = false;
-            }
-        });
-
-        return isValid;
-    }
-
-    // Habilitar o deshabilitar el botón de crear reserva
-    function validarCampos() {
-        const horas = document.getElementById("Horas_reservas").value;
-        const minutos = document.getElementById("minutos_reservas").value;
-
-        const campos = ["programa", "semestre", "num_asistentes"];
-        let valido = campos.every(campo => {
-            const elemento = document.getElementById(campo);
-            return elemento && elemento.value.trim() !== '' && elemento.value !== "0";
-        });
-
-        // Al menos uno de los dos (horas o minutos) debe ser mayor a 0
-        if (horas === "0" && minutos === "0") {
-            valido = false;
-        }
-
-        document.getElementById('btnCrearReserva').disabled = !valido;
-    }
-
-    // Asignar validaciones a los cambios en los campos
-    document.querySelectorAll('input, select').forEach(elemento => {
-        elemento.addEventListener('change', validarCampos);
-        elemento.addEventListener('input', validarCampos);
-    });
-
-    // Evento de envío del formulario
-    document.getElementById("formulario").addEventListener("submit", function(event) {
-        if (!validarFormulario()) {
-            event.preventDefault();
-        }
-    });
-
-    // Ocultar mensajes de error al hacer clic en los campos
-    const camposValidar = [
-        { id: "Horas_reservas", mensaje: "mensajeDuracion" },
-        { id: "minutos_reservas", mensaje: "mensajeMinutos" },
-        { id: "programa", mensaje: "mensajePrograma" },
-        { id: "semestre", mensaje: "mensajeSemestre" },
-        { id: "num_asistentes", mensaje: "mensajeAsistentes" }
-    ];
-
-    camposValidar.forEach(({ id, mensaje }) => {
-        const campo = document.getElementById(id);
-        if (campo) {
-            campo.addEventListener('focus', () => {
-                ocultarMensaje(mensaje);
-            });
-        }
-    });
-});
-</script>
 
 <!-- Modal para Detalles del Evento -->
 <div class="modal fade" id="modalDetallesEvento" tabindex="-1" role="dialog" aria-labelledby="modalDetallesEventoLabel" aria-hidden="true">
@@ -262,10 +150,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modalBody">
+                <!-- Campos existentes -->
+                <p style = "display:none;"><strong>ID de Reserva:</strong> <span id="reservaIdMostrar"></span></p>
+                <!-- <p><strong>Sede Seleccionada:</strong> <span id="sedeSeleccionada"></span></p>
+                <p><strong>Espacio Seleccionado:</strong> <span id="espacioSeleccionado"></span></p> -->
                 <p><strong>Título:</strong> <span id="reservaTitulo"></span></p>
                 <p><strong>Fecha de Inicio:</strong> <span id="reservaFechaInicio"></span></p>
                 <p><strong>Fecha de Fin:</strong> <span id="reservaFechaFin"></span></p>
                 <p><strong>Descripción:</strong> <span id="reservaDescripcion"></span></p>
+                
+                <!-- Campos adicionales para mantener el estado -->
+                <input type="hidden" id="sede_seleccionada_modal" />
+                <input type="hidden" id="espacio_seleccionada_modal" />
+                <input type="hidden" id="reservaId" value="">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="$('#modalDetallesEvento').modal('hide')">Cerrar</button>
@@ -304,3 +201,4 @@ document.addEventListener("DOMContentLoaded", function() {
             <button class="btn btn-outline-primary" id="btn-lista">Lista</button>
         </div>
     </div>
+<script src='../scripts/formulario.js'></script>

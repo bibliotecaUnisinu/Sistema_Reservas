@@ -16,7 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validar datos
     if (empty($nombreSede) || empty($direccion) || empty($contacto)) {
-        header('Location: ../Visualizaciones/crear_sede.php?error=Por favor, completa todos los campos'); // Redirigir con mensaje de error
+        // Redirigir con mensaje de error (modificado: ahora con alerta)
+        echo "<script>
+                alert('Por favor, completa todos los campos');
+                window.location.href = '../Visualizaciones/crear_sede.php';
+              </script>";
         exit; // (modificado) Termina la ejecución del script
     }
 
@@ -28,11 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'state_location' => 1 // Estado de la sede habilitada por defecto
     ];
 
-    // Insertar en la tabla 'locations'
-    if (insert($conexion, 'locations', $data)) { // (modificado) Llama a la función insert
-        header('Location: ../Visualizaciones/sedes.php?success=Sede creada exitosamente'); // Redirigir con mensaje de éxito
+     // Insertar en la tabla 'locations'
+     if (insert($conexion, 'locations', $data)) { // (modificado) Llama a la función insert
+        // Redirigir con mensaje de éxito (modificado: ahora con alerta)
+        echo "<script>
+                alert('Sede creada exitosamente');
+                window.location.href = '../Visualizaciones/sedes.php';
+              </script>";
     } else {
-        header('Location: ../Visualizaciones/crear_sede.php?error=Error al crear la sede'); // Redirigir con mensaje de error
+        // Redirigir con mensaje de error (modificado: ahora con alerta)
+        echo "<script>
+                alert('Error al crear la sede');
+                window.location.href = '../Visualizaciones/crear_sede.php';
+              </script>";
     }
     exit; // (modificado) Termina la ejecución del script
 }

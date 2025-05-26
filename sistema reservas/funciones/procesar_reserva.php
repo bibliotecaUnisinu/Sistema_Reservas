@@ -97,36 +97,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($num_asistentes > $capacidad_espacio) {
                             $mensaje = "El número de asistentes ($num_asistentes) supera la capacidad del espacio ($capacidad_espacio).";
                         } else {
-                            // Verificar si hay reservas existentes que se superpongan
-                            $query = "SELECT COUNT(*) as total_reservas 
-                                    FROM reservations r
-                                    JOIN spaces s ON r.id_space = s.id_space
-                                    WHERE r.date_reserv = ?
-                                    AND s.name_space = ?
-                                    AND s.id_location = ?
-                                    AND (
-                                        (r.start_time <= ? AND ADDTIME(r.start_time, CONCAT(r.hours_reserv, ':', r.minuts_reserv)) > ?)
-                                        OR
-                                        (r.start_time >= ? AND r.start_time < ?)
-                                    )";
+                             // Verificar si hay reservas existentes que se superpongan, ignorando las canceladas y las inactivas
+                             $query = "SELECT COUNT(*) as total_reservas 
+                             FROM reservations r
+                             JOIN spaces s ON r.id_space = s.id_space
+                             WHERE r.date_reserv = ?
+                             AND s.name_space = ?
+                             AND s.id_location = ?
+                             AND r.cancel_reserv = 0  -- Ignora reservas canceladas
+                             AND r.state_reservation = 1  -- Ignora reservas inactivas
+                             AND (
+                                 (r.start_time <= ? AND ADDTIME(r.start_time, CONCAT(r.hours_reserv, ':', r.minuts_reserv)) > ?)
+                                 OR
+                                 (r.start_time >= ? AND r.start_time < ?)
+                             )";
 
-                            $stmt = $conexion->prepare($query);
-                            $stmt->bind_param("ssissii", 
-                                            $fecha_reserva,
-                                            $espacio_seleccionado,
-                                            $id_location,
-                                            $hora_fin_nueva_reserva,
-                                            $hora_inicio,
-                                            $hora_inicio,
-                                            $hora_fin_nueva_reserva);
-                            
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-                            $row = $result->fetch_assoc();
+                             $stmt = $conexion->prepare($query);
+                             $stmt->bind_param("ssissii", 
+                                 $fecha_reserva,
+                                 $espacio_seleccionado,
+                                 $id_location,
+                                 $hora_fin_nueva_reserva,
+                                 $hora_inicio,
+                                 $hora_inicio,
+                                 $hora_fin_nueva_reserva);
 
-                            if ($row['total_reservas'] > 0) {
-                                $mensaje = 'Ya existe una reserva para este espacio en el horario seleccionado.';
-                            } else {
+                             $stmt->execute();
+                             $result = $stmt->get_result();
+                             $row = $result->fetch_assoc();
+
+                             // Verificación después de la consulta
+                             if ($row['total_reservas'] > 0) {
+                             $mensaje = 'Ya existe una reserva activa para este espacio en el horario seleccionado.';
+                             } else {
                                 // Preparar los datos para insertar en la base de datos
                                 $data = [
                                     'id_user' => $id,

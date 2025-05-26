@@ -160,3 +160,93 @@ select {
 .fc-timegrid-slot {
     height: 40px;
 }
+
+/* Estilo base para select */
+/* Select base */
+select {
+    border-color: #000000 !important;
+    background-color: #ffffff !important;
+    font-family: 'arial' !important;
+    width: 100%; /* Ocupa el ancho del contenedor padre */
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    display: block;
+}
+
+/* Ajustes para pantallas medianas */
+@media (max-width: 768px) {
+    select {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Ajustes para pantallas pequeñas (como 412x915) */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px !important;
+    }
+
+    select {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+    }
+
+    #calendar {
+        margin-top: 10px;
+        border: none;
+        overflow-x: auto; /* Asegura que no se corte en pantallas pequeñas */
+    }
+}
+/* ESTILOS RESPONSIVE PARA SELECTS - Versión mejorada */
+@media (max-width: 767.98px) {
+    /* Contenedor principal */
+    .container.mt-5 > .d-flex.justify-content-between {
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+        padding: 0 15px !important;
+    }
+
+    /* Override para Bootstrap */
+    select.form-select.w-auto {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Selects personalizados */
+    #sedeSelect, 
+    #espacioSelect {
+        font-size: 14px !important;
+        padding: 10px 35px 10px 12px !important;
+        height: 42px !important;
+        margin: 0 !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background: 
+            url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") 
+            no-repeat right 12px center/15px !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 4px !important;
+    }
+
+    /* Botones */
+    #Botones {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+
+    #Botones button.btn {
+        width: 100% !important;
+        padding: 8px 5px !important;
+        font-size: 13px !important;
+    }
+}
+

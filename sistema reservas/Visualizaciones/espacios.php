@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin_name'])) {
 }
 
 // Obtener todos los espacios habilitados
-$resultado = select($conexion, 'spaces WHERE state_space = 1'); // Llama a la función select para obtener los espacios habilitados
+$resultado = select($conexion, 'spaces'); // No filtra por estado
 $sedes = select($conexion, 'locations WHERE state_location = 1'); // Llama a la función select para obtener las sedes activas
 
 // Crear un mapa de sedes habilitadas
@@ -46,13 +46,19 @@ foreach ($sedes as $sede) {
                 $primerNombreSede = $nombresSede[0]; // Obtiene el primer nombre de la sede
 
                 $nombreCompletoEspacio = htmlspecialchars($row['name_space']); // Escapa el nombre del espacio
+                $claseEstado = ($row['state_space'] == 0) ? 'espacio-deshabilitado' : '';
             ?>
-                <div class="sede-card"
-                    data-sede-id="<?php echo $row['id_location']; ?>" data-id="<?php echo $row['id_space']; ?>"
-                    onclick="openModal('<?php echo $nombreCompletoEspacio; ?>', '<?php echo htmlspecialchars($row['capacity']); ?>', '<?php echo $nombreCompletoSede; ?>', '<?php echo $row['id_space']; ?>', '<?php echo $row['state_space']; ?>')">
-                    <h2><?php echo $primerNombreSede; ?></h2> <!-- Muestra el primer nombre de la sede -->
-                    <p class="espacio-name"><?php echo $nombreCompletoEspacio; ?></p> <!-- Muestra el nombre del espacio -->
-                </div>
+               <div class="sede-card <?php echo $claseEstado; ?>"
+                data-sede-id="<?php echo $row['id_location']; ?>"
+                data-id="<?php echo $row['id_space']; ?>"
+                onclick="openModal('<?php echo $nombreCompletoEspacio; ?>', '<?php echo htmlspecialchars($row['capacity']); ?>', '<?php echo $nombreCompletoSede; ?>', '<?php echo $row['id_space']; ?>', '<?php echo $row['state_space']; ?>')">
+                <h2><?php echo $primerNombreSede; ?></h2> <!-- Muestra el primer nombre de la sede -->
+                <p class="espacio-name"><?php echo $nombreCompletoEspacio; ?></p> <!-- Muestra el nombre del espacio -->
+                
+                <?php if ($row['state_space'] == 0): ?>
+                    <p class="estado-deshabilitado">Espacio deshabilitado</p>
+                <?php endif; ?>
+            </div>
             <?php } ?>
         <?php endforeach; ?>
 

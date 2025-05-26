@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin_name'])) {
 }
 
 // Consulta para obtener solo las sedes habilitadas
-$resultado = select($conexion, 'locations WHERE state_location = 1'); // Obtener sedes habilitadas
+$resultado = select($conexion, 'locations'); // Obtener todas las sedes, sin filtrar por estado
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +41,7 @@ $resultado = select($conexion, 'locations WHERE state_location = 1'); // Obtener
                 data-id="<?php echo $row['id_location']; ?>" 
                 onclick="openModal('<?php echo $nombreCompleto; ?>', '<?php echo htmlspecialchars($row['addres']); ?>', '<?php echo htmlspecialchars($row['contact']); ?>', '<?php echo $row['id_location']; ?>', '<?php echo $row['state_location']; ?>')">
                 <h2><?php echo $primerNombre; ?></h2> <!-- Mostrar el primer nombre de la sede -->
-                <p class="estado">Estado: Habilitada</p> <!-- Mostrar el estado de la sede -->
+                <p class="estado">Estado: <?php echo $row['state_location'] == 1 ? 'Habilitada' : 'Deshabilitada'; ?></p>
             </div>
         <?php endforeach; ?>
 

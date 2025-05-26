@@ -1,0 +1,99 @@
+    .export-actions {
+        display: flex;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .export-form {
+        margin: 0;
+    }
+    
+    .btn-export {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-pdf {
+        background-color: #dc3545;
+        color: white;
+        border: 1px solid #dc3545;
+    }
+    
+    .btn-pdf:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+    
+    .btn-excel {
+        background-color: #28a745;
+        color: white;
+        border: 1px solid #28a745;
+    }
+    
+    .btn-excel:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+        .filter-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .filters-panel {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .filters-panel.show {
+            display: block;
+        }
+        
+        .advanced-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .form-select, .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        
+        .export-options {
+            margin: 20px 0;
+        }

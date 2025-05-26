@@ -10,79 +10,77 @@ if (!isset($_SESSION['admin_name'])) {
     header("Location: ../Visualizaciones/login.php"); // Redirige al login si no hay sesión activa
     exit();
 }
-
-// Consultas para obtener opciones para los selectores
+// Consultas para los selectores
 $tipos_usuario = $conexion->query("SELECT DISTINCT user_type FROM reservations");
 $sedes = $conexion->query("SELECT DISTINCT location_select FROM reservations");
-$programas = $conexion->query("SELECT DISTINCT program FROM reservations");
+$espacios = $conexion->query("SELECT DISTINCT space_select FROM reservations");
+$programas = $conexion->query("SELECT * FROM programas");
 $semestres = $conexion->query("SELECT DISTINCT semester FROM reservations");
 
-// Construir la consulta base
-$sql = "SELECT * FROM reservations";
-$filters = []; // Array para almacenar los filtros
+// Construir consulta base con JOIN para obtener nombre del programa
+$sql = "SELECT r.*, p.nombre_programa AS nombre_programa 
+        FROM reservations r 
+        LEFT JOIN programas p ON r.program = p.id_programa";
 
-// Función para agregar filtros a la consulta
+
+$filters = [];
+
 function addFilter($condition) {
-    global $filters; // Accede al array de filtros global
-    $filters[] = $condition; // Agrega la condición al array de filtros
+    global $filters;
+    $filters[] = $condition;
 }
 
-// Filtrar por tipo de usuario
+// Aplicar filtros
 if (!empty($_GET['tipo_usuario'])) {
     $tipo_usuario = $conexion->real_escape_string($_GET['tipo_usuario']);
-    addFilter("user_type = '$tipo_usuario'");
+    addFilter("r.user_type = '$tipo_usuario'");
 }
 
-// Filtrar por sede y espacio
 if (!empty($_GET['sede'])) {
     $sede = $conexion->real_escape_string($_GET['sede']);
-    addFilter("location_select = '$sede'");
+    addFilter("r.location_select = '$sede'");
 
-    // Si también se seleccionó un espacio, filtrar por ambos
     if (!empty($_GET['espacio'])) {
         $espacio = $conexion->real_escape_string($_GET['espacio']);
-        addFilter("space_select = '$espacio'");
+        addFilter("r.space_select = '$espacio'");
     }
 } elseif (!empty($_GET['espacio'])) {
-    // Si no se seleccionó sede, pero sí espacio
     $espacio = $conexion->real_escape_string($_GET['espacio']);
-    addFilter("space_select = '$espacio'");
+    addFilter("r.space_select = '$espacio'");
 }
 
-// Filtrar por rango de fechas
-if (!empty($_GET['fecha_inicio']) && !empty($_GET['fecha_fin'])) {
+if (!empty($_GET['fecha_inicio'])) {
     $fecha_inicio = $conexion->real_escape_string($_GET['fecha_inicio']);
-    $fecha_fin = $conexion->real_escape_string($_GET['fecha_fin']);
-    addFilter("date_reserv BETWEEN '$fecha_inicio' AND '$fecha_fin'");
+    addFilter("r.date_current >= '$fecha_inicio'");
 }
 
-// Filtrar por programa
+if (!empty($_GET['fecha_fin'])) {
+    $fecha_fin = $conexion->real_escape_string($_GET['fecha_fin']);
+    addFilter("r.date_reserv <= '$fecha_fin'");
+}
+
 if (!empty($_GET['programa'])) {
     $programa = $conexion->real_escape_string($_GET['programa']);
-    addFilter("program = '$programa'");
+    addFilter("p.nombre_programa = '$programa'");
 }
 
-// Filtrar por semestre
 if (!empty($_GET['semestre'])) {
     $semestre = $conexion->real_escape_string($_GET['semestre']);
-    addFilter("semester = '$semestre'");
+    addFilter("r.semester = '$semestre'");
 }
 
-// Filtrar por estado de la reserva
 if (!empty($_GET['estado_reserva'])) {
     $estado_reserva = $conexion->real_escape_string($_GET['estado_reserva']);
-    addFilter("state_reservation = '$estado_reserva'");
+    addFilter("r.state_reservation = '$estado_reserva'");
 }
 
-// Filtrar por cancelación de la reserva
 if (!empty($_GET['cancelada'])) {
     $cancelada = $conexion->real_escape_string($_GET['cancelada']);
-    addFilter("cancel_reserv = '$cancelada'");
+    addFilter("r.cancel_reserv = '$cancelada'");
 }
 
-// Si hay filtros, añadirlos a la consulta SQL
 if (!empty($filters)) {
-    $sql .= " WHERE " . implode(" AND ", $filters); // Agrega los filtros a la consulta SQL
+    $sql .= " WHERE " . implode(" AND ", $filters);
 }
 
 // Ejecutar la consulta
@@ -123,73 +121,162 @@ $result = $conexion->query($sql);
 </head>
 
 <body>
-    <?php include('../includes/header.php'); ?> <!-- Incluye el encabezado de la página -->
-    <h1>Reportes</h1> <!-- Título de la sección de reportes -->
+<?php include('../includes/header.php'); ?>
+    <h1>Reportes</h1>
 
-    <!-- Formulario de búsqueda avanzado -->
-    <form method="GET" action="reportes.php"> <!-- Formulario que envía datos a reportes.php -->
-        <label for="tipo_usuario">Tipo de Usuario:</label>
-        <select id="tipo_usuario" name="tipo_usuario"> <!-- Selector para tipo de usuario -->
-            <option value="">Seleccione tipo</option>
-            <?php while ($row = $tipos_usuario->fetch_assoc()): ?> <!-- Itera sobre los tipos de usuario -->
-                <option value="<?php echo htmlspecialchars($row['user_type']); ?>"><?php echo htmlspecialchars($row['user_type']); ?></option>
-            <?php endwhile; ?>
-        </select>
-
-        <label for="sede">Sede:</label>
-        <select id="sede" name="sede" onchange="actualizarEspacios()"> <!-- Selector para sede -->
-            <option value="">Seleccione sede</option>
-            <?php while ($row = $sedes->fetch_assoc()): ?> <!-- Itera sobre las sedes -->
-                <option value="<?php echo htmlspecialchars($row['location_select']); ?>"><?php echo htmlspecialchars($row['location_select']); ?></option>
-            <?php endwhile; ?>
-        </select>
-
-        <label for="espacio">Espacio:</label>
-        <select id="espacio" name="espacio"> <!-- Selector para espacio -->
-            <option value="">Seleccione un espacio</option>
-        </select>
-
-        <label for="fecha_inicio">Fecha Inicio:</label>
-        <input type="date" id="fecha_inicio" name="fecha_inicio"> <!-- Campo de entrada para la fecha de inicio -->
-
-        <label for="fecha_fin">Fecha Fin:</label>
-        <input type="date" id="fecha_fin" name="fecha_fin"> <!-- Campo de entrada para la fecha de fin -->
-
-        <label for="programa">Programa:</label>
-        <select id="programa" name="programa"> <!-- Selector para programa -->
-            <option value="">Seleccione programa</option>
-            <?php while ($row = $programas->fetch_assoc()): ?> <!-- Itera sobre los programas -->
-                <option value="<?php echo htmlspecialchars($row['program']); ?>"><?php echo htmlspecialchars($row['program']); ?></option>
-            <?php endwhile; ?>
-        </select>
-
-        <label for="semestre">Semestre:</label>
-        <select id="semestre" name="semestre"> <!-- Selector para semestre -->
-            <option value="">Seleccione semestre</option>
-            <?php while ($row = $semestres->fetch_assoc()): ?> <!-- Itera sobre los semestres -->
-                <option value="<?php echo htmlspecialchars($row['semester']); ?>"><?php echo htmlspecialchars($row['semester']); ?></option>
-            <?php endwhile; ?>
-        </select>
-
-        <label for="estado_reserva">Estado de la Reserva:</label>
-        <select id="estado_reserva" name="estado_reserva"> <!-- Selector para estado de reserva -->
-            <option value="">Seleccione estado</option>
-            <option value="1">Activo</option>
-            <option value="0">Finalizado</option>
-        </select>
-
-        <label for="cancelada">Reserva Cancelada:</label>
-        <select id="cancelada" name="cancelada"> <!-- Selector para reservas canceladas -->
-            <option value="">Seleccione opción</option>
-            <option value="1">Sí</option>
-            <option value="0">No</option>
-        </select>
-
-        <button type="submit">Buscar</button> <!-- Botón para enviar el formulario -->
+    <!-- Botón principal de filtrado con diseño mejorado -->
+    <div class="filter-container">
+        <button id="toggleFilters" class="btn btn-primary">
+            <i class="fas fa-filter"></i> Filtrar Reportes
+        </button>
+        
+        <!-- Contenedor de filtros (oculto inicialmente) -->
+        <div id="filtersPanel" class="filters-panel">
+            <form method="GET" action="reportes.php" class="advanced-filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="tipo_usuario">Tipo de Usuario:</label>
+                        <select id="tipo_usuario" name="tipo_usuario" class="form-select">
+                            <option value="">Seleccione tipo</option>
+                            <?php while ($row = $tipos_usuario->fetch_assoc()): ?>
+                                <option value="<?php echo htmlspecialchars($row['user_type']); ?>">
+                                    <?php echo htmlspecialchars($row['user_type']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="sede">Sede:</label>
+                        <select id="sede" name="sede" onchange="actualizarEspacios()" class="form-select">
+                            <option value="">Seleccione sede</option>
+                            <?php while ($row = $sedes->fetch_assoc()): ?>
+                                <option value="<?php echo htmlspecialchars($row['location_select']); ?>">
+                                    <?php echo htmlspecialchars($row['location_select']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="espacio">Espacio:</label>
+                        <select id="espacio" name="espacio" class="form-select">
+                            <option value="">Seleccione un espacio</option>
+                            <?php while ($row = $espacios->fetch_assoc()): ?>
+                                <option value="<?php echo htmlspecialchars($row['space_select']); ?>">
+                                    <?php echo htmlspecialchars($row['space_select']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="fecha_inicio">Fecha Inicio:</label>
+                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="fecha_fin">Fecha Fin:</label>
+                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="programa">Programa:</label>
+                        <select id="programa" name="programa" class="form-select">
+                            <option value="">Seleccione programa</option>
+                            <?php while ($row = $programas->fetch_assoc()): ?>
+                                <option value="<?php echo htmlspecialchars($row['nombre_programa']); ?>">
+                                    <?php echo htmlspecialchars($row['nombre_programa']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="semestre">Semestre:</label>
+                        <select id="semestre" name="semestre" class="form-select">
+                            <option value="">Seleccione semestre</option>
+                            <?php while ($row = $semestres->fetch_assoc()): ?>
+                                <option value="<?php echo htmlspecialchars($row['semester']); ?>">
+                                    <?php echo htmlspecialchars($row['semester']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="estado_reserva">Estado Reserva:</label>
+                        <select id="estado_reserva" name="estado_reserva" class="form-select">
+                            <option value="">Seleccione estado</option>
+                            <option value="1">Activo</option>
+                            <option value="0">Finalizado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="cancelada">Reserva Cancelada:</label>
+                        <select id="cancelada" name="cancelada" class="form-select">
+                            <option value="">Seleccione opción</option>
+                            <option value="1">Sí</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-search"></i> Aplicar Filtros
+                    </button>
+                    <button type="button" id="resetFilters" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i> Limpiar Filtros
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+<div class="export-actions">
+    <!-- Botón de Exportar a PDF -->
+    <form method="GET" action="exportar_pdf.php" class="export-form">
+        <input type="hidden" name="tipo_usuario" value="<?= htmlspecialchars($_GET['tipo_usuario'] ?? '') ?>">
+        <input type="hidden" name="sede" value="<?= htmlspecialchars($_GET['sede'] ?? '') ?>">
+        <input type="hidden" name="espacio" value="<?= htmlspecialchars($_GET['espacio'] ?? '') ?>">
+        <input type="hidden" name="fecha_inicio" value="<?= htmlspecialchars($_GET['fecha_inicio'] ?? '') ?>">
+        <input type="hidden" name="fecha_fin" value="<?= htmlspecialchars($_GET['fecha_fin'] ?? '') ?>">
+        <input type="hidden" name="programa" value="<?= htmlspecialchars($_GET['programa'] ?? '') ?>">
+        <input type="hidden" name="semestre" value="<?= htmlspecialchars($_GET['semestre'] ?? '') ?>">
+        <input type="hidden" name="estado_reserva" value="<?= htmlspecialchars($_GET['estado_reserva'] ?? '') ?>">
+        <input type="hidden" name="cancelada" value="<?= htmlspecialchars($_GET['cancelada'] ?? '') ?>">
+        <button type="submit" class="btn btn-export btn-pdf">
+            <i class="fas fa-file-pdf"></i> Exportar a PDF
+        </button>
     </form>
 
+    <!-- Botón de Exportar a Excel -->
+    <form method="GET" action="exportar_excel.php" class="export-form">
+        <input type="hidden" name="tipo_usuario" value="<?= htmlspecialchars($_GET['tipo_usuario'] ?? '') ?>">
+        <input type="hidden" name="sede" value="<?= htmlspecialchars($_GET['sede'] ?? '') ?>">
+        <input type="hidden" name="espacio" value="<?= htmlspecialchars($_GET['espacio'] ?? '') ?>">
+        <input type="hidden" name="fecha_inicio" value="<?= htmlspecialchars($_GET['fecha_inicio'] ?? '') ?>">
+        <input type="hidden" name="fecha_fin" value="<?= htmlspecialchars($_GET['fecha_fin'] ?? '') ?>">
+        <input type="hidden" name="programa" value="<?= htmlspecialchars($_GET['programa'] ?? '') ?>">
+        <input type="hidden" name="semestre" value="<?= htmlspecialchars($_GET['semestre'] ?? '') ?>">
+        <input type="hidden" name="estado_reserva" value="<?= htmlspecialchars($_GET['estado_reserva'] ?? '') ?>">
+        <input type="hidden" name="cancelada" value="<?= htmlspecialchars($_GET['cancelada'] ?? '') ?>">
+        <button type="submit" class="btn btn-export btn-excel">
+            <i class="fas fa-file-excel"></i> Exportar a Excel
+        </button>
+    </form>
+</div>
+
+<link rel="stylesheet" href="../styles/reporte.css">
+<script src='../scripts/reporte.js'></script>
+
     <!-- Mostrar resultados -->
-    <table border='1' cellspacing='0' cellpadding='10'> <!-- Tabla para mostrar los resultados -->
+    <table border='1' cellspacing='0' cellpadding='10'>
         <tr>
             <th>ID Usuario</th>
             <th>Nombre Usuario</th>
@@ -212,36 +299,35 @@ $result = $conexion->query($sql);
             <th>Reserva Cancelada</th>
         </tr>
 
-        <?php if ($result && $result->num_rows > 0): ?> <!-- Verifica si hay resultados -->
-            <?php while ($row = $result->fetch_assoc()): ?> <!-- Itera sobre los resultados -->
+        <?php if ($result && $result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($row["id_user"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["name_user"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["surname_user"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["phone_user"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["email_user"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["user_type"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["observation"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["location_select"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["space_select"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["date_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["date_reserv"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["start_time"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["hours_reserv"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["minuts_reserv"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["number_attendees"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["program"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["semester"]); ?></td>
-                    <td><?php echo ($row["state_reservation"] ? "Activo" : "Finalizado"); ?></td>
-                    <td><?php echo ($row["cancel_reserv"] ? "Sí" : "No"); ?></td>
-                    </tr>
+                    <td><?= htmlspecialchars($row["id_user"]) ?></td>
+                    <td><?= htmlspecialchars($row["name_user"]) ?></td>
+                    <td><?= htmlspecialchars($row["surname_user"]) ?></td>
+                    <td><?= htmlspecialchars($row["phone_user"]) ?></td>
+                    <td><?= htmlspecialchars($row["email_user"]) ?></td>
+                    <td><?= htmlspecialchars($row["user_type"]) ?></td>
+                    <td><?= htmlspecialchars($row["observation"]) ?></td>
+                    <td><?= htmlspecialchars($row["location_select"]) ?></td>
+                    <td><?= htmlspecialchars($row["space_select"]) ?></td>
+                    <td><?= htmlspecialchars($row["date_current"]) ?></td>
+                    <td><?= htmlspecialchars($row["date_reserv"]) ?></td>
+                    <td><?= htmlspecialchars($row["start_time"]) ?></td>
+                    <td><?= htmlspecialchars($row["hours_reserv"]) ?></td>
+                    <td><?= htmlspecialchars($row["minuts_reserv"]) ?></td>
+                    <td><?= htmlspecialchars($row["number_attendees"]) ?></td>
+                    <td><?php echo htmlspecialchars($row["nombre_programa"] ?? 'Sin asignar'); ?></td>
+                    <td><?= htmlspecialchars($row["semester"]) ?></td>
+                    <td><?= ($row["state_reservation"] ? "Activo" : "Finalizado") ?></td>
+                    <td><?= ($row["cancel_reserv"] ? "Sí" : "No") ?></td>
+                </tr>
             <?php endwhile; ?>
         <?php else: ?>
-            <tr><td colspan='25'>No se encontraron reservas.</td></tr> <!-- Mensaje si no hay reservas -->
+            <tr><td colspan='19'>No se encontraron reservas.</td></tr>
         <?php endif; ?>
     </table>
 
-    <?php $conexion->close(); ?> <!-- Cierra la conexión a la base de datos -->
+    <?php $conexion->close(); ?>
 </body>
-
 </html>

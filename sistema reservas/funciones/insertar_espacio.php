@@ -9,7 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Verifica si la solicitud es de t
 
     // Validar que los campos no estén vacíos
     if (empty($nombreEspacio) || empty($capacidad) || empty($sedeId)) {
-        header('Location: ../Visualizaciones/crear_espacio.php?error=Por favor, completa todos los campos'); // Redirigir con mensaje de error
+        // Redirigir con mensaje de error (modificado: ahora con alerta)
+        echo "<script>
+                alert('Por favor, completa todos los campos');
+                window.location.href = '../Visualizaciones/crear_espacio.php';
+              </script>";
         exit; // (modificado) Termina la ejecución del script
     }
 
@@ -23,9 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Verifica si la solicitud es de t
 
     // Intentar insertar los datos en la base de datos
     if (insert($conexion, 'spaces', $data)) { // (modificado) Llama a la función insert
-        header('Location: ../Visualizaciones/espacios.php?success=Espacio creado exitosamente'); // Redirigir con mensaje de éxito
+        // Redirigir con mensaje de éxito (modificado: ahora con alerta)
+        echo "<script>
+                alert('Espacio creado exitosamente');
+                window.location.href = '../Visualizaciones/espacios.php';
+              </script>";
     } else {
-        header('Location: ../Visualizaciones/crear_espacio.php?error=Error al crear el espacio'); // Redirigir con mensaje de error
+        // Redirigir con mensaje de error (modificado: ahora con alerta)
+        echo "<script>
+                alert('Error al crear el espacio');
+                window.location.href = '../Visualizaciones/crear_espacio.php';
+              </script>";
     }
     exit; // (modificado) Termina la ejecución del script
 }

@@ -203,3 +203,10 @@ h1 {
     color: #aaa; /* Establece el color del placeholder a gris claro */
     opacity: 1; /* Asegura que el placeholder sea completamente opaco */
 }
+
+.estado.habilitada {
+    color: green;
+}
+.estado.deshabilitada {
+    color: red;
+}
