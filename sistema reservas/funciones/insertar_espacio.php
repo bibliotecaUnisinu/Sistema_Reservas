@@ -28,16 +28,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Verifica si la solicitud es de t
     // Intentar insertar los datos en la base de datos
     if (insert($conexion, 'spaces', $data)) { // (modificado) Llama a la función insert
         // Redirigir con mensaje de éxito (modificado: ahora con alerta)
-        echo "<script>
-                alert('Espacio creado exitosamente');
-                window.location.href = '../Visualizaciones/espacios.php';
-              </script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                <script>
+                    window.onload = function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Espacio creado exitosamente!',
+                            text: 'Redirigiendo...',
+                            timer: 3000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '../Visualizaciones/espacios.php';
+                        });
+                    };
+                </script>";
+
     } else {
         // Redirigir con mensaje de error (modificado: ahora con alerta)
-        echo "<script>
-                alert('Error al crear el espacio');
-                window.location.href = '../Visualizaciones/crear_espacio.php';
-              </script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+            <script>
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al crear el espacio',
+                        text: 'Ocurrió un problema al guardar los datos. Intenta nuevamente.',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        window.location.href = '../Visualizaciones/crear_espacio.php';
+                    });
+                };
+            </script>";
     }
     exit; // (modificado) Termina la ejecución del script
 }

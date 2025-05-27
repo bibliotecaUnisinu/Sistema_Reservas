@@ -35,16 +35,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      // Insertar en la tabla 'locations'
      if (insert($conexion, 'locations', $data)) { // (modificado) Llama a la función insert
         // Redirigir con mensaje de éxito (modificado: ahora con alerta)
-        echo "<script>
-                alert('Sede creada exitosamente');
-                window.location.href = '../Visualizaciones/sedes.php';
-              </script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                <script>
+                    window.onload = function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Sede creada exitosamente!',
+                            text: 'Serás redirigido en unos segundos...',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            willClose: () => {
+                                window.location.href = '../Visualizaciones/sedes.php';
+                            }
+                        });
+                    };
+                </script>";
+
+
     } else {
         // Redirigir con mensaje de error (modificado: ahora con alerta)
-        echo "<script>
-                alert('Error al crear la sede');
-                window.location.href = '../Visualizaciones/crear_sede.php';
-              </script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+            <script>
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al crear la sede',
+                        text: 'Ocurrió un problema al guardar los datos. Intenta nuevamente.',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        window.location.href = '../Visualizaciones/crear_sede.php';
+                    });
+                };
+            </script>";
     }
     exit; // (modificado) Termina la ejecución del script
 }

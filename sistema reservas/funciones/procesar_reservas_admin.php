@@ -48,15 +48,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hora_inicio_6am = strtotime("06:30");
         $hora_inicio_8pm = strtotime("19:59");
 
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
         if ($hora_inicio_timestamp < $hora_inicio_6am || $hora_inicio_timestamp > $hora_inicio_8pm) {
-            $mensaje = 'La hora de inicio debe estar entre las 6:30 AM y las 7:59 PM.';
-        } elseif ($Horas_reservas < 0 || $minutos_reservas < 0) {
-            $mensaje = 'La duración de la reserva no puede ser negativa.';
-        } elseif (empty($Horas_reservas) && empty($minutos_reservas)) {
-            $mensaje = 'La duración de la reserva no puede ser 0 horas y 0 minutos.';
-        } elseif ($Horas_reservas > 4 || ($Horas_reservas == 4 && $minutos_reservas > 0)) {
-            $mensaje = 'La duración máxima de la reserva es de 4 horas.';
-        } else {
+                        echo "
+                        <script>
+                            window.onload = function() {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Hora no permitida',
+                                    text: 'La hora de inicio debe estar entre las 6:30 AM y las 7:59 PM.',
+                                    confirmButtonText: 'Volver'
+                                }).then(() => {
+                                    window.history.back();
+                                });
+                            };
+                        </script>";
+                    } elseif ($Horas_reservas < 0 || $minutos_reservas < 0) {
+                        echo "
+                        <script>
+                            window.onload = function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Duración inválida',
+                                    text: 'La duración de la reserva no puede ser negativa.',
+                                    confirmButtonText: 'Corregir'
+                                }).then(() => {
+                                    window.history.back();
+                                });
+                            };
+                        </script>";
+                    } elseif (empty($Horas_reservas) && empty($minutos_reservas)) {
+                        echo "
+                        <script>
+                            window.onload = function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Duración nula',
+                                    text: 'La duración de la reserva no puede ser 0 horas y 0 minutos.',
+                                    confirmButtonText: 'Modificar'
+                                }).then(() => {
+                                    window.history.back();
+                                });
+                            };
+                        </script>";
+                    } elseif ($Horas_reservas > 4 || ($Horas_reservas == 4 && $minutos_reservas > 0)) {
+                        echo "
+                        <script>
+                            window.onload = function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Duración excedida',
+                                    text: 'La duración máxima de la reserva es de 4 horas.',
+                                    confirmButtonText: 'Entendido'
+                                }).then(() => {
+                                    window.history.back();
+                                });
+                            };
+                        </script>";
+                    } else {
+
             // Obtener la duración total de la nueva reserva en minutos
             $total_minutos_reserva = (!empty($Horas_reservas) ? $Horas_reservas * 60 : 0) + (!empty($minutos_reservas) ? $minutos_reservas : 0);
             $hora_fin_nueva_reserva = date("H:i", strtotime($hora_inicio) + ($total_minutos_reserva * 60));
@@ -95,8 +145,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         // Validar capacidad del espacio
                         if ($num_asistentes > $capacidad_espacio) {
-                            $mensaje = "El número de asistentes ($num_asistentes) supera la capacidad del espacio ($capacidad_espacio).";
-                        } else {
+                        echo "
+                        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                        <script>
+                            window.onload = function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Capacidad Excedida',
+                                    html: 'El número de asistentes (<strong>$num_asistentes</strong>) supera la capacidad del espacio (<strong>$capacidad_espacio</strong>).',
+                                    confirmButtonText: 'Volver'
+                                }).then(() => {
+                                    window.history.back(); // Vuelve atrás para corregir el número
+                                });
+                            };
+                        </script>";
+                    } else {
                              // Verificar si hay reservas existentes que se superpongan, ignorando las canceladas y las inactivas
                              $query = "SELECT COUNT(*) as total_reservas 
                              FROM reservations r
@@ -126,10 +189,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                              $result = $stmt->get_result();
                              $row = $result->fetch_assoc();
 
-                             // Verificación después de la consulta
+                            // Verificación después de la consulta
                              if ($row['total_reservas'] > 0) {
-                             $mensaje = 'Ya existe una reserva activa para este espacio en el horario seleccionado.';
-                             } else {
+                                    echo "
+                                    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                                    <script>
+                                        window.onload = function() {
+                                            Swal.fire({
+                                                icon: 'warning',
+                                                title: 'Reserva Duplicada',
+                                                text: 'Ya existe una reserva activa para este espacio en el horario seleccionado.',
+                                                confirmButtonText: 'Volver'
+                                            }).then(() => {
+                                                window.history.back(); // Opcional: vuelve atrás
+                                            });
+                                        };
+                                    </script>";
+                                } else {
+
                                 // Preparar los datos para insertar en la base de datos
                                 $data = [
                                     'id_user' => $id,
@@ -173,6 +250,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         $mail->setFrom('referencistabiblioteca@unisinucartagena.edu.co', 'Biblioteca');
                                         $mail->addAddress($email);
 
+                                        // Obtener el nombre del programa desde el ID
+                                        $query_programa = "SELECT nombre_programa FROM programas WHERE id_programa = ?";
+                                        $stmt_programa = $conexion->prepare($query_programa);
+                                        $stmt_programa->bind_param("i", $programa);
+                                        $stmt_programa->execute();
+                                        $result_programa = $stmt_programa->get_result();
+                                        $row_programa = $result_programa->fetch_assoc();
+                                        $nombre_programa = $row_programa ? $row_programa['nombre_programa'] : 'Desconocido';
+
+
                                         // Contenido del correo
                                         $mail->isHTML(true);
                                         $mail->Subject = 'Confirmación de reserva';
@@ -184,18 +271,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <p><strong>Duración:</strong> $Horas_reservas horas y $minutos_reservas minutos</p>
                                         <p><strong>Sede:</strong> $sede_seleccionada</p>
                                         <p><strong>Espacio:</strong> $espacio_seleccionado</p>
-                                        <p>Reserva para el programa de $programa del semestre $semestre asistiendo $num_asistentes personas.</p>
+                                        <p>Reserva para el programa de $nombre_programa del semestre $semestre asistiendo $num_asistentes personas.</p>
 
                                         <p>En caso de no poder asistir a la reserva solicitada, por favor, acercarse a la oficina o enviar un correo a la dirección de la biblioteca para cancelar su reserva.</p>";
 
                                         // Enviar el correo
                                         $mail->send();
 
-                                        // Mostrar un mensaje de éxito y redirigir
-                                        echo "<script>
-                                                alert('Reserva creada exitosamente. Serás redirigido al inicio.');
-                                                window.location.href = '../Visualizaciones/administrador.php';
-                                              </script>";
+                                      // Mostrar un mensaje de éxito y redirigir
+                                        echo "
+                                                <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                                                <script>
+                                                    window.onload = function() {
+                                                        Swal.fire({
+                                                            title: '¡Reserva Exitosa!',
+                                                            text: 'Serás redirigido al inicio.',
+                                                            icon: 'success',
+                                                            timer: 3000,
+                                                            timerProgressBar: true,
+                                                            showConfirmButton: false,
+                                                            willClose: () => {
+                                                                window.location.href = '../Visualizaciones/administrador.php';
+                                                            }
+                                                        });
+                                                    }
+                                                </script>";
+
                                         exit();
                                     } catch (Exception $e) {
                                         echo "<script>
